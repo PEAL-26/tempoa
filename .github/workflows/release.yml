@@ -12,9 +12,9 @@ jobs:
     name: Criar release com instalador
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: npm
@@ -58,5 +58,4 @@ jobs:
             - Início com o Windows (opcional)
             - Persistência local em SQLite
           releaseDraft: false
-          releasePrerelease: false
-          createRelease: true
+          prerelease: false
