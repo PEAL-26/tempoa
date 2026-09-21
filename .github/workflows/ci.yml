@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    name: Build & testes
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: project/package-lock.json
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: project/src-tauri
+
+      - name: Dependências npm
+        working-directory: project
+        run: npm ci
+
+      - name: Frontend (tsc + vite build)
+        working-directory: project
+        run: npm run build
+
+      - name: Backend Rust (check + testes)
+        working-directory: project/src-tauri
+        run: |
+          cargo check
+          cargo test

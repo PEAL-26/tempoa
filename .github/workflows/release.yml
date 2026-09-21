@@ -1,0 +1,62 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Criar release com instalador
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: project/package-lock.json
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: project/src-tauri
+
+      - name: Dependências npm
+        working-directory: project
+        run: npm ci
+
+      - name: Compilar e publicar release
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          projectPath: project/src-tauri
+          tagName: v__VERSION__
+          releaseName: 'Tempoa v__VERSION__'
+          releaseBody: |
+            ## Tempoa v__VERSION__
+
+            Aplicação de agendamento de tarefas com alertas para Windows.
+
+            ### Instalação
+            Descarregue o instalador **`Tempoa_*_x64-setup.exe`** (aba *Assets* desta release) e execute-o.
+            O Windows SmartScreen pedirá confirmação — escolha *Mais informações* → *Executar assim mesmo*.
+
+            ### Funcionalidades
+            - Tarefas do dia ordenadas por hora, com destaque para o próximo compromisso
+            - Alerta prioritário em ecrã completo, sempre no topo, com som (repetições a cada 5/10/15/30/60 min até dispensar ou concluir)
+            - Lembretes empilháveis no canto inferior direito (antes/depois da hora)
+            - Calendário mensal com indicador de dias com tarefas
+            - Bandeja do Windows (corre em background ao fechar a janela)
+            - Início com o Windows (opcional)
+            - Persistência local em SQLite
+          releaseDraft: false
+          releasePrerelease: false
+          createRelease: true
