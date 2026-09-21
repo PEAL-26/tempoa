@@ -22,6 +22,15 @@ de tarefas e atividades com **alertas no momento certo**.
 - Rust (toolchain MSVC) + Visual Studio Build Tools (C++)
 - WebView2 Runtime (pré-instalado no Windows 10/11)
 
+## Instalação (release oficial)
+
+Descarregue o instalador mais recente em **GitHub Releases**:
+
+<https://github.com/PEAL-26/tempoa/releases>
+
+Escolha o ficheiro `Tempoa_*_x64-setup.exe` (em *Assets*) e execute-o. O Windows SmartScreen pedirá
+confirmação — *Mais informações* → *Executar assim mesmo*.
+
 ## Desenvolvimento
 
 ```sh
